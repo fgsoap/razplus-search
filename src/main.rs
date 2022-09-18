@@ -28,7 +28,7 @@ async fn main() -> Result<(), reqwest::Error> {
         for (inner_index, inner_element) in document.select(&inner_elector).enumerate() {
             if top_index == inner_index && top_element.html().contains("leveled-books") {
                 println!(
-                    "{:#?}{:#?}",
+                    "{:#?}",
                     top_element
                         .html()
                         .split("\n                            ")
@@ -38,9 +38,9 @@ async fn main() -> Result<(), reqwest::Error> {
                         .collect::<String>()
                         .replace("href=\"/books/leveled-books/book/?", "")
                         .replace("amp;", "")
-                        .replace("  ", ""),
-                    &inner_element.html().split(" words, ").collect::<Vec<_>>()[1]
-                        .replace("                    </div>", "")
+                        .replace("  ", "")
+                        + &inner_element.html().split(" words, ").collect::<Vec<_>>()[1]
+                            .replace("                    </div>", "")
                 );
             }
         }
