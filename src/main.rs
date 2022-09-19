@@ -26,7 +26,10 @@ async fn main() -> Result<(), reqwest::Error> {
 
     for (top_index, top_element) in document.select(&top_selector).enumerate() {
         for (inner_index, inner_element) in document.select(&inner_elector).enumerate() {
-            if top_index == inner_index && top_element.html().contains("leveled-books") {
+            if top_index == inner_index
+                && top_element.html().contains("leveled-books")
+                && inner_element.html().contains("leveled-books")
+            {
                 println!(
                     "{:#?}",
                     top_element
