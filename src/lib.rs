@@ -47,7 +47,7 @@ pub async fn run() -> Result<String, reqwest::Error> {
                         .replace("  ", "")
                         .replace("<strong>", "")
                         .replace("</strong>", ""),
-                    &inner_element.html().split(" Level ").collect::<Vec<_>>()[1]
+                    inner_element.html().split(" Level ").collect::<Vec<_>>()[1]
                         .replace("                    </div>", "")
                         .replace("<strong>", "")
                         .replace("</strong>", "")
