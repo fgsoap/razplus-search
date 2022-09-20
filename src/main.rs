@@ -42,8 +42,12 @@ async fn main() -> Result<(), reqwest::Error> {
                         .replace("href=\"/books/leveled-books/book/?", "")
                         .replace("amp;", "")
                         .replace("  ", "")
+                        .replace("<strong>", "")
+                        .replace("</strong>", "")
                         + &inner_element.html().split(" words, ").collect::<Vec<_>>()[1]
                             .replace("                    </div>", "")
+                            .replace("<strong>", "")
+                            .replace("</strong>", "")
                 );
             }
         }
