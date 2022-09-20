@@ -13,7 +13,8 @@ fn runs() {
 #[test]
 fn test_love() {
     let mut cmd = Command::cargo_bin("razplus-search").unwrap();
-    cmd.arg("-n 'love'")
+    cmd.arg("-n")
+        .arg("love")
         .assert()
         .success()
         .stdout(predicate::str::contains("El Día de San Valentin"));

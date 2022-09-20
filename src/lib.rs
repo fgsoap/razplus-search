@@ -28,7 +28,7 @@ pub async fn run() -> Result<String, reqwest::Error> {
             "https://www.raz-plus.com/search/ajax-search.html?doSearch=Search&searchTerms={}",
             name
         );
-        eprintln!("Searching {:?}\n", url);
+        eprintln!("Searching {:?}", url);
 
         let res = reqwest::get(url).await?;
         let body = res.text().await?;
