@@ -5,11 +5,20 @@ use std::fmt::Write as _;
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 struct Args {
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser, forbid_empty_values = true, validator = validate_name)]
     name: String,
 }
 
+fn validate_name(name: &str) -> Result<(), String> {
+    if name.trim().len() != name.len() {
+        Err(String::from("name cannot have leading and trailing space"))
+    } else {
+        Ok(())
+    }
+}
+
 pub async fn run() -> Result<String, reqwest::Error> {
+    eprintln!("args {:?}\n", Args::parse());
     let name = Args::parse().name;
     let url = format!(
         "https://www.raz-plus.com/search/ajax-search.html?doSearch=Search&searchTerms={}",
