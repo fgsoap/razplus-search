@@ -24,7 +24,7 @@ pub async fn run() -> Result<String, reqwest::Error> {
     let top_selector = Selector::parse(r#"div.info>h2>a"#).unwrap();
     let inner_elector = Selector::parse(r#"div.info>div.category"#).unwrap();
 
-    let mut result = String::from("");
+    let mut result = String::new();
 
     for (top_index, top_element) in document.select(&top_selector).enumerate() {
         for (inner_index, inner_element) in document.select(&inner_elector).enumerate() {
