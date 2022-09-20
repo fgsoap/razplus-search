@@ -21,6 +21,7 @@ fn validate_name(name: &str) -> Result<(), String> {
 
 pub async fn run() -> Result<String, reqwest::Error> {
     eprintln!("{:?}", Args::parse());
+
     let mut results = String::new();
     for name in Args::parse().name {
         let url = format!(
@@ -37,7 +38,6 @@ pub async fn run() -> Result<String, reqwest::Error> {
         let inner_elector = Selector::parse(r#"div.info>div.category"#).unwrap();
 
         let mut result = String::new();
-
         for (top_index, top_element) in document.select(&top_selector).enumerate() {
             for (inner_index, inner_element) in document.select(&inner_elector).enumerate() {
                 if top_index == inner_index
@@ -70,7 +70,6 @@ pub async fn run() -> Result<String, reqwest::Error> {
                 }
             }
         }
-
         if let Err(e) = writeln!(results, "{}", result) {
             eprintln!("{}", e);
             std::process::exit(1);
