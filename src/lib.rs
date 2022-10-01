@@ -39,7 +39,6 @@ pub async fn run() -> Result<String, reqwest::Error> {
         let inner_elector = Selector::parse(r#"div.info>div.category"#).unwrap();
 
         let mut result = String::new();
-        print!("\x1B[2J\x1B[1;1H");
         for (top_index, top_element) in document.select(&top_selector).enumerate() {
             for (inner_index, inner_element) in document.select(&inner_elector).enumerate() {
                 if top_index == inner_index
