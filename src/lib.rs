@@ -1,4 +1,5 @@
 use clap::Parser;
+use colored::*;
 use scraper::{Html, Selector};
 use std::fmt::Write as _;
 
@@ -28,7 +29,7 @@ pub async fn run() -> Result<String, reqwest::Error> {
             "https://www.raz-plus.com/search/ajax-search.html?doSearch=Search&searchTerms={}",
             name
         );
-        eprintln!("Searching {:?}", url);
+        eprintln!("Searching {}", url.bright_cyan());
 
         let res = reqwest::get(url).await?;
         let body = res.text().await?;
@@ -59,11 +60,13 @@ pub async fn run() -> Result<String, reqwest::Error> {
                             .replace("amp;", "")
                             .replace("  ", "")
                             .replace("<strong>", "")
-                            .replace("</strong>", ""),
+                            .replace("</strong>", "")
+                            .bright_purple(),
                         inner_element.html().split(" Level ").collect::<Vec<_>>()[1]
                             .replace("                    </div>", "")
                             .replace("<strong>", "")
                             .replace("</strong>", "")
+                            .bright_green()
                     ) {
                         eprintln!("{}", e);
                         std::process::exit(1);
