@@ -21,7 +21,7 @@ fn validate_name(name: &str) -> Result<(), String> {
 }
 
 pub async fn run() -> Result<String, reqwest::Error> {
-    eprintln!("{:?}", Args::parse());
+    println!("{:?}", Args::parse());
 
     let mut results = String::new();
     for name in Args::parse().name {
@@ -35,7 +35,7 @@ pub async fn run() -> Result<String, reqwest::Error> {
         let body = res.text().await?;
 
         let document = Html::parse_document(&body);
-        let top_selector = Selector::parse(r#"div.info>h2>a"#).unwrap();
+        let top_selector = Selector::parse(r#"div.info>h2>div>strong"#).unwrap();
         let inner_elector = Selector::parse(r#"div.info>div.category"#).unwrap();
 
         let mut result = String::new();
