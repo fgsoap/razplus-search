@@ -35,52 +35,43 @@ pub async fn run() -> Result<String, reqwest::Error> {
         let body = res.text().await?;
 
         let document = Html::parse_document(&body);
-        let top_selector = Selector::parse(r#"div.info>h2>div>strong"#).unwrap();
-        let inner_elector = Selector::parse(r#"div.info>div.category"#).unwrap();
+        let selector = Selector::parse(r#"li.resource>a"#).unwrap();
 
-        let mut result = String::new();
-        for (top_index, top_element) in document.select(&top_selector).enumerate() {
-            for (inner_index, inner_element) in document.select(&inner_elector).enumerate() {
-                if top_index == inner_index
-                    && top_element.html().contains("leveled-books")
-                    && inner_element.html().contains("leveled-books")
-                {
-                    if let Err(e) = writeln!(
-                        result,
-                        "{}{}",
-                        top_element
-                            .html()
-                            .split("\n                            ")
-                            .collect::<Vec<_>>()[0..3]
-                            .iter()
-                            .cloned()
-                            .collect::<String>()
-                            .replace("href=\"/books/leveled-books/book/?", "")
-                            .replace("amp;", "")
-                            .replace("  ", "")
-                            .replace("<strong>", "")
-                            .replace("</strong>", "")
-                            .replace("\">", ", ")
-                            .replace("<a ", "")
-                            .replace("</a>", ",")
-                            .replace('&', ", ")
-                            .bright_purple(),
-                        inner_element.html().split(" Level ").collect::<Vec<_>>()[1]
-                            .replace("                    </div>", "")
-                            .replace("<strong>", "")
-                            .replace("</strong>", "")
-                            .bright_green()
-                    ) {
-                        eprintln!("{}", e);
-                        std::process::exit(1);
-                    }
-                }
+        for element in document.select(&selector) {
+            let href = element.value().attr("href").unwrap();
+            if href.contains("leveled-books") && href.contains("langId=1") {
+                let id = href.split("?id=").collect::<Vec<_>>()[1]
+                    .split("&langId=")
+                    .collect::<Vec<_>>()[0];
+
+                let fragment = Html::parse_fragment(&element.html());
+
+                let title_selector = Selector::parse(r#"div.info>h2>div>strong"#).unwrap();
+                let title = fragment
+                    .select(&title_selector)
+                    .next()
+                    .unwrap()
+                    .text()
+                    .collect::<Vec<_>>()[0];
+
+                let category_selector = Selector::parse(r#"div.info>div.category"#).unwrap();
+                let category = fragment
+                    .select(&category_selector)
+                    .next()
+                    .unwrap()
+                    .text()
+                    .collect::<Vec<_>>();
+                let final_category =
+                    category[0].replace('\n', "").trim().to_string() + " " + category[1].trim();
+
+                let result = id.to_owned() + " " + title + &final_category;
+
+                if let Err(e) = writeln!(results, "{}", result) {
+                    eprintln!("{}", e);
+                    std::process::exit(1);
+                };
             }
         }
-        if let Err(e) = writeln!(results, "{}", result) {
-            eprintln!("{}", e);
-            std::process::exit(1);
-        };
     }
     Ok(results)
 }
